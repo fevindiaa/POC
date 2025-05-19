@@ -1,0 +1,28 @@
+
+stages:
+  - terraform
+
+variables:
+  AWS_DEFAULT_REGION: "us-east-1"
+
+before_script:
+  - apk add --no-cache curl unzip bash jq
+  - curl -O https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+  - unzip terraform_1.6.6_linux_amd64.zip
+  - mv terraform /usr/local/bin/
+
+kafka_apply:
+  image: amazonlinux
+  stage: terraform
+  script:
+    - |
+      secret=$(aws secretsmanager get-secret-value --secret-id msk-client-cert --query SecretString --output text)
+      mkdir -p certs
+      echo "$secret" | jq -r '."client.crt"' > certs/client.crt
+      echo "$secret" | jq -r '."client.key"' > certs/client.key
+      echo "$secret" | jq -r '."ca.crt"' > certs/ca.crt
+
+    - terraform init
+    - terraform apply -auto-approve
+  only:
+    - main
