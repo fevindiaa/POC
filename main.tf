@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "kafka" {
-  bootstrap_servers = ["boot-dxp692ko.c3.kafka-serverless.eu-north-1.amazonaws.com:9098"]
+  bootstrap_servers = ["boot-wt1thek4.c2.kafka-serverless.eu-north-1.amazonaws.com:9098"]
 
   config = {
     "security.protocol" = "SSL"
