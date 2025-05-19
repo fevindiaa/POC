@@ -10,13 +10,12 @@ terraform {
 provider "kafka" {
   bootstrap_servers = ["boot-wt1thek4.c2.kafka-serverless.eu-north-1.amazonaws.com:9098"]
 
-  config = {
-    "security.protocol" = "SSL"
-    "ssl.ca.location" = "${path.module}/certs/ca.crt"
-    "ssl.certificate.location" = "${path.module}/certs/client.crt"
-    "ssl.key.location" = "${path.module}/certs/client.key"
-  }
+  security_protocol = "SSL"
+  tls_ca_cert       = file("${path.module}/certs/ca.crt")
+  tls_cert          = file("${path.module}/certs/client.crt")
+  tls_key           = file("${path.module}/certs/client.key")
 }
+
 
 resource "kafka_topic" "my_topic" {
   name               = "my-topic"
