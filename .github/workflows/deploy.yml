@@ -8,7 +8,7 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: AWS Cred  # 👈 This must match the environment name exactly
+    environment: AWS Cred
 
     env:
       AWS_DEFAULT_REGION: us-east-1
