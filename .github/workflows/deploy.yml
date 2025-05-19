@@ -9,17 +9,20 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     env:
-      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+      AWS_DEFAULT_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install dependencies
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Fetch TLS certs from Secrets Manager
+      - name: Download TLS certs from AWS Secrets Manager
         run: |
           secret=$(aws secretsmanager get-secret-value --secret-id msk--client-certs --query SecretString --output text)
           mkdir -p certs
@@ -27,11 +30,14 @@ jobs:
           echo "$secret" | jq -r '."client.key"' > certs/client.key
           echo "$secret" | jq -r '."ca.crt"' > certs/ca.crt
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        env:
+          TF_VAR_bootstrap_servers: "boot-wt1thek4.c2.kafka-serverless.eu-north-1.amazonaws.com:9098"
+          TF_VAR_ca_cert_path: "${{ github.workspace }}/certs/ca.crt"
+          TF_VAR_client_cert_path: "${{ github.workspace }}/certs/client.crt"
+          TF_VAR_client_key_path: "${{ github.workspace }}/certs/client.key"
+
