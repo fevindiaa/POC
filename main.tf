@@ -10,11 +10,9 @@ terraform {
 provider "kafka" {
   bootstrap_servers = [var.bootstrap_servers]
 
-  config = {
-    "security.protocol"        = "SSL"
-    "ssl.ca.location"          = var.ca_cert_path
-    "ssl.certificate.location" = var.client_cert_path
-    "ssl.key.location"         = var.client_key_path
-  }
+  # TLS settings as top-level arguments:
+  security_protocol = "SSL"
+  tls_ca_cert       = file(var.ca_cert_path)
+  tls_cert          = file(var.client_cert_path)
+  tls_key           = file(var.client_key_path)
 }
-
