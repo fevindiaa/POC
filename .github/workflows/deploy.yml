@@ -1,0 +1,35 @@
+
+name: Deploy Kafka Infra
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      AWS_DEFAULT_REGION: us-east-1
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Download and extract TLS certs from AWS Secrets Manager
+        run: |
+          secret=$(aws secretsmanager get-secret-value --secret-id msk-client-cert --query SecretString --output text)
+          mkdir -p certs
+          echo "$secret" | jq -r '."client.crt"' > certs/client.crt
+          echo "$secret" | jq -r '."client.key"' > certs/client.key
+          echo "$secret" | jq -r '."ca.crt"' > certs/ca.crt
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
