@@ -21,7 +21,7 @@ jobs:
 
       - name: Fetch TLS certs from Secrets Manager
         run: |
-          secret=$(aws secretsmanager get-secret-value --secret-id msk-client-cert --query SecretString --output text)
+          secret=$(aws secretsmanager get-secret-value --secret-id msk--client-certs --query SecretString --output text)
           mkdir -p certs
           echo "$secret" | jq -r '."client.crt"' > certs/client.crt
           echo "$secret" | jq -r '."client.key"' > certs/client.key
