@@ -8,29 +8,27 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    environment: AWS Cred
-
     env:
-      AWS_DEFAULT_REGION: eu-north-1
+      AWS_DEFAULT_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Install jq
+      - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Download and extract TLS certs from AWS Secrets Manager
+      - name: Fetch TLS certs from Secrets Manager
         run: |
-          secret=$(aws secretsmanager get-secret-value --secret-id msk--client-certs --query SecretString --output text)
+          secret=$(aws secretsmanager get-secret-value --secret-id msk-client-cert --query SecretString --output text)
           mkdir -p certs
           echo "$secret" | jq -r '."client.crt"' > certs/client.crt
           echo "$secret" | jq -r '."client.key"' > certs/client.key
           echo "$secret" | jq -r '."ca.crt"' > certs/ca.crt
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Terraform Init
         run: terraform init
