@@ -2,7 +2,7 @@ terraform {
   required_providers {
     kafka = {
       source  = "Mongey/kafka"
-      version = "0.4.7"
+      version = "0.4.3"
     }
   }
 }
