@@ -1,20 +1,20 @@
 variable "bootstrap_servers" {
   type        = string
-  description = "MSK bootstrap servers"
+  description = "boot-xf196i8y.c3.kafka-serverless.eu-north-1.amazonaws.com:9098"
 }
 
 variable "ca_cert_path" {
   type        = string
-  description = "Path to CA cert"
+  description = "./cert/ca.crt"
 }
 
 variable "client_cert_path" {
   type        = string
-  description = "Path to client cert"
+  description = "./cert/client.crt"
 }
 
 variable "client_key_path" {
   type        = string
-  description = "Path to client key"
+  description = "./cert/client.key"
 }
 
