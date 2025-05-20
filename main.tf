@@ -2,17 +2,16 @@ terraform {
   required_providers {
     kafka = {
       source  = "Mongey/kafka"
-      version = ">=0.4.7"
+      version = "0.4.7"
     }
   }
 }
 
 provider "kafka" {
-  bootstrap_servers = [var.bootstrap_servers]
+  bootstrap_servers = ["boot-xf196i8y.c3.kafka-serverless.eu-north-1.amazonaws.com:9098"]
 
-  # TLS settings as top-level arguments:
-  security_protocol = "SSL"
-  tls_ca_cert       = var.ca_cert_path
-  tls_cert          = var.client_cert_path
-  tls_key           = var.client_key_path
+  tls_enabled        = true
+  ca_cert_file       = var.ca_cert_path
+  client_cert_file   = var.client_cert_path
+  client_key_file    = var.client_key_path
 }
