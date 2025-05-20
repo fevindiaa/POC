@@ -12,7 +12,7 @@ provider "kafka" {
 
   # TLS settings as top-level arguments:
   security_protocol = "SSL"
-  tls_ca_cert       = file(var.ca_cert_path)
-  tls_cert          = file(var.client_cert_path)
-  tls_key           = file(var.client_key_path)
+  tls_ca_cert       = var.ca_cert_path
+  tls_cert          = var.client_cert_path
+  tls_key           = var.client_key_path
 }
