@@ -28,7 +28,7 @@ jobs:
           mkdir -p certs
           echo "$secret" | jq -r '."client.crt"' > certs/client.crt
           echo "$secret" | jq -r '."client.key"' > certs/client.key
-          echo "$secret" | jq -r '."ca.crt"' > certs/ca.crt
+          echo "$secret" | jq -r '."ca.crt"' > certs/ca.pem
 
       - name: Terraform Init
         run: terraform init
@@ -36,8 +36,8 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
-          TF_VAR_bootstrap_servers: "boot-wt1thek4.c2.kafka-serverless.eu-north-1.amazonaws.com:9098"
-          TF_VAR_ca_cert_path: "${{ github.workspace }}/certs/ca.crt"
+          TF_VAR_bootstrap_servers: "boot-xf196i8y.c3.kafka-serverless.eu-north-1.amazonaws.com:9098"
+          TF_VAR_ca_cert_path: "${{ github.workspace }}/certs/ca.pem"
           TF_VAR_client_cert_path: "${{ github.workspace }}/certs/client.crt"
           TF_VAR_client_key_path: "${{ github.workspace }}/certs/client.key"
 
