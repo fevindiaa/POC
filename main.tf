@@ -11,8 +11,9 @@ provider "kafka" {
   bootstrap_servers = ["boot-xf196i8y.c3.kafka-serverless.eu-north-1.amazonaws.com:9098"]
 
   tls_enabled     = true
-  ca_cert         = file("./certs/ca.pem")
-  client_cert     = file("./certs/client.crt")
-  client_key      = file("./certs/client.key")
+  ca_cert         = file(var.ca_cert_path)
+  client_cert     = file(var.client_cert_path)
+  client_key      = file(var.client_key_path)
 }
+
 
